@@ -10,7 +10,9 @@ const addAd = document.querySelector('.add__ad'),
     modalBtnWarning = document.querySelector('.modal__btn-warning'),
     modalFileInput = document.querySelector('.modal__file-input'),
     modalFileBtn = document.querySelector('.modal__file-btn'),
-    modalImageAdd = document.querySelector('.modal__image-add');
+    modalImageAdd = document.querySelector('.modal__image-add'),
+    modalContent = document.querySelector('.modal__content');
+
 
 const textFileBtn = modalFileBtn.textContent;
 const srcModalImg = modalImageAdd.src;
@@ -40,7 +42,23 @@ const closeModal = function(event) { // закрытие модальных ок
         checkForm();
     }
 };
+const renderCard = () => { // добавляем объявление
+    catalog.textContent = '';
+    dataBase.forEach((item, i) => {
+        catalog.insertAdjacentHTML('beforeend', `
+        <li class="card" data-id="${i}">
+        <img class="card__image" src="data:image/jpeg;base64,${item.image}" alt="test">
+        <div class="card__description">
+            <h3 class="card__header">${item.nameItem}</h3>
+            <div class="card__price">${item.costItem}</div>
+        </div>
+    </li>
+        `)
+    });
+}
+const renderModal = () => {
 
+}
 modalFileInput.addEventListener('input', event => {
     const target = event.target;
     const reader = new FileReader();
@@ -56,6 +74,8 @@ modalFileInput.addEventListener('input', event => {
             modalImageAdd.src = `data:image/jpeg;base64,${infoPhoto.base64}`; // добавляем фото
         } else {
             modalFileBtn.textContent = 'Файл не должен превышать 200кб';
+            modalFileInput.value = '';
+            checkForm();
         }
     });
 });
@@ -68,9 +88,11 @@ modalSubmit.addEventListener('submit', event => { // отправка формы
     for (const elem of elementsModalSubmit) {
         itemObj[elem.name] = elem.value;
     }
+    itemObj.image = infoPhoto.base64;
     dataBase.push(itemObj);
     closeModal({ target: modalAdd });
     saveDB();
+    renderCard();
 });
 
 addAd.addEventListener('click', () => {
@@ -83,10 +105,24 @@ modalAdd.addEventListener('click', closeModal);
 modalItem.addEventListener('click', closeModal);
 
 
-catalog.addEventListener('click', event => {
+catalog.addEventListener('click', function(event) {
     const target = event.target;
+    const id = +target.closest('.card').getAttribute('data-id');
+    const modalHeaderItem = document.querySelector('.modal__header-item'),
+        modalStatusItem = document.querySelector('.modal__status-item'),
+        modalDescriptionItem = document.querySelector('.modal__description-item'),
+        modalCostItem = document.querySelector('.modal__cost-item');
     if (target.closest('.card')) {
+        dataBase.forEach((item, i) => {
+            if (id === i) {
+                modalHeaderItem.textContent = `${item.nameItem}`;
+                modalStatusItem.textContent = `${item.status}`;
+                modalDescriptionItem.textContent = `${item.descriptionItem}`;
+                modalCostItem.textContent = `${item.costItem}`;
+            }
+        });
         modalItem.classList.remove('hide');
         document.addEventListener('keydown', closeModal);
     };
 });
+renderCard();
