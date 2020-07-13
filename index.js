@@ -50,7 +50,7 @@ const renderCard = () => { // добавляем объявление
         <img class="card__image" src="data:image/jpeg;base64,${item.image}" alt="test">
         <div class="card__description">
             <h3 class="card__header">${item.nameItem}</h3>
-            <div class="card__price">${item.costItem}</div>
+            <div class="card__price">Цена: ${item.costItem} ГРН</div>
         </div>
     </li>
         `)
@@ -65,7 +65,7 @@ modalFileInput.addEventListener('input', event => {
     const file = target.files[0];
     infoPhoto.filename = file.name; // добавляем имя и размер файла
     infoPhoto.size = file.size;
-    reader.readAsBinaryString(file); // одслеживаем файл 
+    reader.readAsBinaryString(file); // отслеживаем файл 
 
     reader.addEventListener('load', event => {
         if (infoPhoto.size < 200000) {
@@ -111,14 +111,16 @@ catalog.addEventListener('click', function(event) {
     const modalHeaderItem = document.querySelector('.modal__header-item'),
         modalStatusItem = document.querySelector('.modal__status-item'),
         modalDescriptionItem = document.querySelector('.modal__description-item'),
-        modalCostItem = document.querySelector('.modal__cost-item');
+        modalCostItem = document.querySelector('.modal__cost-item'),
+        modalImageItem = document.querySelector('.modal__image-item');
     if (target.closest('.card')) {
         dataBase.forEach((item, i) => {
             if (id === i) {
                 modalHeaderItem.textContent = `${item.nameItem}`;
                 modalStatusItem.textContent = `${item.status}`;
                 modalDescriptionItem.textContent = `${item.descriptionItem}`;
-                modalCostItem.textContent = `${item.costItem}`;
+                modalCostItem.textContent = `${item.costItem} ГРН`;
+                modalImageItem.src = `data:image/jpeg;base64,${item.image}`;
             }
         });
         modalItem.classList.remove('hide');
