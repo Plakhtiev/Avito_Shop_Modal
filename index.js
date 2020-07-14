@@ -19,7 +19,8 @@ const modalHeaderItem = document.querySelector('.modal__header-item'),
     modalCostItem = document.querySelector('.modal__cost-item'),
     modalImageItem = document.querySelector('.modal__image-item');
 
-const searchInput = document.querySelector('.search__input');
+const searchInput = document.querySelector('.search__input'),
+    menuСontainer = document.querySelector('.menu__container');
 
 const textFileBtn = modalFileBtn.textContent;
 const srcModalImg = modalImageAdd.src;
@@ -134,5 +135,13 @@ catalog.addEventListener('click', function(event) {
         modalItem.classList.remove('hide');
         document.addEventListener('keydown', closeModal);
     };
+});
+
+menuСontainer.addEventListener('click', event => {
+    const target = event.target;
+    if (target.tagName === 'A') {
+        const result = dataBase.filter(item => item.category === target.dataset.category);
+        renderCard(result);
+    }
 });
 renderCard();
